@@ -8,57 +8,56 @@ class App extends Component {
 	constructor() {
 		super();
 		this.state = {
-			movies:[],
+			movies: [],
 			arrMoviesWatch: [],
+			sort_by: 'popularity.desc',
 		};
 	}
 
-	sortList = selector => {
-		let items = [...this.state.movies];
-		if (selector === 'popularity.desc') {
-			items = items.sort((a, b) => b.popularity - a.popularity);
-		}
-		if (selector === 'popularity.asc') {
-			items = items.sort((a, b) => a.popularity - b.popularity);
-		}
-		if (selector === 'vote_average.desc') {
-			items.sort((a, b) => b.vote_average - a.vote_average);
-		}
-		if (selector === 'vote_average.asc') {
-			items.sort((a, b) => a.vote_average - b.vote_average);
-		}
-			this.setState({
-				movies: items,
-			});
+	componentDidMount() {
+		this.getMovies();
 	}
 
-	addToWatchList = movie => {
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.sort_by !== this.state.sort_by) {
+			this.getMovies();
+		}
+	}
+
+	addToWatchList = (movie) => {
 		this.setState({
 			arrMoviesWatch: [...this.state.arrMoviesWatch, movie],
 		});
-	}
+	};
 
-	removeFromWatchList = movie => {
+	removeFromWatchList = (movie) => {
 		this.setState({
-			arrMoviesWatch: this.state.arrMoviesWatch.filter(item => {
-				return item.id !== movie.id
-			})
+			arrMoviesWatch: this.state.arrMoviesWatch.filter((item) => {
+				return item.id !== movie.id;
+			}),
 		});
-	}
+	};
 
-	componentDidMount() {
-		const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=en-EN`;
+	getMovies = () => {
+		const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&sort_by=${this.state.sort_by}`;
+		console.log(link);
 		fetch(link)
-			.then(response => response.json())
-			.then(data => {
+			.then((response) => response.json())
+			.then((data) => {
 				this.setState({
-					movies: data.results
-				})
-		})
+					movies: data.results,
+				});
+			});
 	}
 
-  render() {
-    const { movies, arrMoviesWatch } = this.state;
+	changeSortingMethod = (selector) => {
+		this.setState({
+			sort_by: selector,
+		});
+	};
+
+	render() {
+		const { movies, arrMoviesWatch } = this.state;
 		return (
 			<div className='container'>
 				<div className='row mt-4'>
@@ -66,7 +65,7 @@ class App extends Component {
 						<div className='card' style={{ width: '100%' }}>
 							<div className='card-body'>
 								<h3>Filters:</h3>
-								<Filters sortList={this.sortList} />
+								<Filters changeSortingMethod={this.changeSortingMethod} />
 							</div>
 						</div>
 					</div>

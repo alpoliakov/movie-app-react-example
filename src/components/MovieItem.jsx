@@ -25,7 +25,7 @@ class MovieItem extends Component {
 				<img
 					className='card-img-top'
 					src={`https://image.tmdb.org/t/p/w500${
-						item.backdrop_path || item.item.poster_path
+						item.backdrop_path || item.poster_path
 					}`}
 					alt={item.title}
 				/>

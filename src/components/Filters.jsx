@@ -21,9 +21,9 @@ class Filters extends Component {
 
 	render() {
     // const { value } = this.state;
-    const { sortList } = this.props;
+    const { changeSortingMethod } = this.props;
     const handleChange = (event) => {
-      sortList(event.target.value);
+			changeSortingMethod(event.target.value);
     }
 		return (
 			<form className='mb-3'>
