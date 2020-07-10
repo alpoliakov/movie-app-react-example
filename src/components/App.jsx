@@ -3,6 +3,7 @@ import MoviesList from './MoviesList';
 import ListMoviesWillWatch from './ListMoviesWillWatch';
 import { API_URL, API_KEY_3 } from '../api';
 import Filters from './Filters';
+import Pagination from './Pagination';
 
 class App extends Component {
 	constructor() {
@@ -10,7 +11,9 @@ class App extends Component {
 		this.state = {
 			movies: [],
 			arrMoviesWatch: [],
-			sort_by: 'popularity.desc',
+			sortBy: 'popularity.desc',
+			totalPages: null,
+			currentPage: 1,
 		};
 	}
 
@@ -19,7 +22,10 @@ class App extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.sort_by !== this.state.sort_by) {
+		if (
+			prevState.sortBy !== this.state.sortBy ||
+			prevState.currentPage !== this.state.currentPage
+		) {
 			this.getMovies();
 		}
 	}
@@ -39,12 +45,12 @@ class App extends Component {
 	};
 
 	getMovies = () => {
-		const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&sort_by=${this.state.sort_by}`;
-		console.log(link);
+		const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&sort_by=${this.state.sortBy}&language=en-US&page=${this.state.currentPage}`;
 		fetch(link)
 			.then((response) => response.json())
 			.then((data) => {
 				this.setState({
+					totalPages: data.total_pages,
 					movies: data.results,
 				});
 			});
@@ -52,16 +58,29 @@ class App extends Component {
 
 	changeSortingMethod = (selector) => {
 		this.setState({
-			sort_by: selector,
+			sortBy: selector,
 		});
 	};
 
+	changeCurrentPage = (method) => {
+		if (method === 'next') {
+			this.setState({
+				currentPage: this.state.currentPage + 1
+			});
+
+		} else if (method === 'previous') {
+			this.setState({
+				currentPage: this.state.currentPage - 1
+			});
+		}
+	}
+
 	render() {
-		const { movies, arrMoviesWatch } = this.state;
+		const { movies, arrMoviesWatch, currentPage, totalPages } = this.state;
 		return (
 			<div className='container'>
 				<div className='row mt-4'>
-					<div className='col-4'>
+					<div className='col-4 filter'>
 						<div className='card' style={{ width: '100%' }}>
 							<div className='card-body'>
 								<h3>Filters:</h3>
@@ -74,6 +93,11 @@ class App extends Component {
 							movies={movies}
 							addToWatchList={this.addToWatchList}
 							removeFromWatchList={this.removeFromWatchList}
+						/>
+						<Pagination
+							currentPage={currentPage}
+							totalPages={totalPages}
+							changeCurrentPage={this.changeCurrentPage}
 						/>
 					</div>
 					<div className='col-3'>

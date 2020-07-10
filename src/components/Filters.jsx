@@ -1,26 +1,7 @@
 import React, { Component } from 'react';
 
 class Filters extends Component {
-	// constructor() {
-	// 	super();
-	// 	this.state = {
-	// 		value: 'popularity.desc',
-	// 	};
-	// }
-
-  // handleChange = (event) => {
-  //   this.setState({
-  //     value: event.target.value,
-  //   });
-  //   console.log(this.state.value);
-
-  //   setTimeout(() => {
-  //     sortList(this.state.value);
-  //   }, 100)
-  // }
-
 	render() {
-    // const { value } = this.state;
     const { changeSortingMethod } = this.props;
     const handleChange = (event) => {
 			changeSortingMethod(event.target.value);
@@ -37,8 +18,8 @@ class Filters extends Component {
 					>
 						<option value='popularity.desc'>Popular descending</option>
 						<option value='popularity.asc'>Popular ascending</option>
-						<option value='vote_average.desc'>Rating descending</option>
-						<option value='vote_average.asc'>Rating ascending</option>
+						<option value='revenue.desc'>Rating descending</option>
+						<option value='revenue.asc'>Rating ascending</option>
 					</select>
 				</div>
 			</form>
